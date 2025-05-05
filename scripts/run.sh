@@ -6,30 +6,26 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 STEPS_DIR="$ROOT_DIR"
 ENV_FILE="$ROOT_DIR/.env"
 
-# ----------------------
-# Load environment vars
-# ----------------------
-
-# Export CLI args first
-if [[ $# -gt 0 ]]; then
-  echo "📦 Loading environment variables from CLI args"
-  for arg in "$@"; do
-    export "$arg"
-    echo "✅ Exported $arg"
-  done
-elif [[ -f "$ENV_FILE" ]]; then
-  echo "📦 No CLI args. Loading from fallback: $ENV_FILE"
+# 1. Load all variables from .env (if present)
+if [[ -f "$ENV_FILE" ]]; then
+  echo "📦 Loading environment variables from $ENV_FILE"
   set -a
   source "$ENV_FILE"
   set +a
 else
-  echo "⚠️  No CLI args or .env file found. Continuing without environment variables."
+  echo "⚠️  No .env file found. Proceeding without it."
 fi
 
-# ----------------------
-# Run all step scripts
-# ----------------------
+# 2. Override only those from CLI args
+if [[ $# -gt 0 ]]; then
+  echo "📦 Overriding variables from CLI args"
+  for arg in "$@"; do
+    export "$arg"
+    echo "✅ CLI override: $arg"
+  done
+fi
 
+# Run steps in order
 run_sorted_scripts() {
   local dir="$1"
 
