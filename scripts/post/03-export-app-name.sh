@@ -30,9 +30,9 @@ for VAR in "${VARS[@]}"; do
   fi
 done
 
-echo "#==========================================================" >> "$ENV_FILE"
-echo "# APP SERVER EXPORTS DEFINED BY SERVER SETUP SCRIPT - END #" >> "$ENV_FILE"
-echo "#==========================================================" >> "$ENV_FILE"
+echo "#============================================================" >> "$ENV_FILE"
+echo "# APP SERVER EXPORTS DEFINED BY SERVER SETUP SCRIPT - END   #" >> "$ENV_FILE"
+echo "#============================================================" >> "$ENV_FILE"
 
 chmod +x "$ENV_FILE"
 echo "✅ Environment variables persisted to $ENV_FILE"
