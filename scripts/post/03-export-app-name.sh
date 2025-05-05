@@ -2,8 +2,8 @@
 
 set -euo pipefail
 
-# File to persist env variables
 ENV_FILE="/etc/profile.d/app-server-env.sh"
+DOTENV_FILE=".env"
 
 # Ensure script is run with sudo/root
 if [[ $EUID -ne 0 ]]; then
@@ -11,8 +11,16 @@ if [[ $EUID -ne 0 ]]; then
   exit 1
 fi
 
-# List of supported environment variable keys
-VARS=("APP_ENV" "DB_HOST" "AWS_REGION" "APP_NAME")
+# Ensure .env exists
+if [[ ! -f "$DOTENV_FILE" ]]; then
+  echo "❌ .env file not found in current directory." >&2
+  exit 1
+fi
+
+echo -e "\e[32m🔧 Loading variables from .env and current shell environment...\e[0m"
+
+# Read all variable keys from .env
+ALL_VARS=$(grep -E '^[A-Za-z_][A-Za-z0-9_]*=' "$DOTENV_FILE" | cut -d '=' -f1)
 
 echo "🔧 Creating environment persistence script at $ENV_FILE"
 echo "#!/bin/bash" > "$ENV_FILE"
@@ -20,13 +28,13 @@ echo "#============================================================" >> "$ENV_FI
 echo "# APP SERVER EXPORTS DEFINED BY SERVER SETUP SCRIPT - START #" >> "$ENV_FILE"
 echo "#============================================================" >> "$ENV_FILE"
 
-for VAR in "${VARS[@]}"; do
-  VALUE="${!VAR:-}"
+for VAR in $ALL_VARS; do
+  VALUE="${!VAR:-$(grep "^$VAR=" "$DOTENV_FILE" | cut -d '=' -f2-)}"
   if [[ -n "$VALUE" ]]; then
     echo "export $VAR=\"$VALUE\"" >> "$ENV_FILE"
-    echo "✅ Set $VAR=$VALUE"
+    echo -e "\e[32m✅ Set $VAR=$VALUE\e[0m"
   else
-    echo "⚠️  $VAR not set. Skipping."
+    echo -e "\e[33m⚠️  $VAR not set or empty. Skipping.\e[0m"
   fi
 done
 
@@ -35,4 +43,4 @@ echo "# APP SERVER EXPORTS DEFINED BY SERVER SETUP SCRIPT - END   #" >> "$ENV_FI
 echo "#============================================================" >> "$ENV_FILE"
 
 chmod +x "$ENV_FILE"
-echo "✅ Environment variables persisted to $ENV_FILE"
+echo -e "\e[32m✅ Environment variables persisted to $ENV_FILE\e[0m"
