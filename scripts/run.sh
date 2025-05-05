@@ -45,8 +45,8 @@ run_sorted_scripts "$STEPS_DIR/post"
 echo "✅ All setup steps completed successfully."
 
 if [ -f /etc/profile.d/app-server-env.sh ]; then
-  echo "🔁 Run below command to source environment variables to current shell with below command."
-  echo "Run `source /etc/profile.d/app-server-env.sh`"
+  echo -e "\e[32m✅ Setup complete. To apply environment variables immediately, run:\e[0m"
+  echo -e "\e[32msource /etc/profile.d/app-server-env.sh\e[0m"
 else
   echo "⚠️  Warning: env export script not found. Skipping immediate application. Open a new shell or reboot the server to take it into effect."
 fi
