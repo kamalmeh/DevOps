@@ -15,7 +15,6 @@ apt-get update -y
 apt-get install -y software-properties-common
 
 # Install Certbot and the Route53 plugin
-add-apt-repository ppa:certbot/certbot -y
 apt-get update -y
 apt-get install -y certbot python3-certbot-dns-route53 python3-certbot-nginx
 
