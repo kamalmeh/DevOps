@@ -8,5 +8,3 @@ else
   apt-get install unzip
   echo "✔️ unzip installed successfully."
 fi
-
-unzip --version
