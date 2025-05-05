@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if[[ $# -gt 0 ]]
+if [[ $# -gt 0 ]]
 then
   echo "🔧 Exporting App Name(s)"
   echo "✔️ Exported application name(s)"
