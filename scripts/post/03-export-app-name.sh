@@ -3,7 +3,7 @@
 set -euo pipefail
 
 ENV_FILE="/etc/profile.d/app-server-env.sh"
-DOTENV_FILE=".env"
+DOTENV_FILE="../.env"
 
 # Ensure script is run with sudo/root
 if [[ $EUID -ne 0 ]]; then
