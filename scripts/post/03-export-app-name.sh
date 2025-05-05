@@ -10,13 +10,13 @@ DOTENV_FILE="$ROOT_DIR/.env"
 
 # Ensure script is run with sudo/root
 if [[ $EUID -ne 0 ]]; then
-  echo "❌ This script must be run as root (use sudo)" >&2
+  echo -e "\e[31m❌ This script must be run as root (use sudo)\e[0m" >&2
   exit 1
 fi
 
 # Ensure .env exists
 if [[ ! -f "$DOTENV_FILE" ]]; then
-  echo "❌ .env file not found at: $DOTENV_FILE" >&2
+  echo -e "\e[31m❌ .env file not found at: $DOTENV_FILE\e[0m" >&2
   exit 1
 fi
 
@@ -32,10 +32,17 @@ echo "# APP SERVER EXPORTS DEFINED BY SERVER SETUP SCRIPT - START #" >> "$ENV_FI
 echo "#============================================================" >> "$ENV_FILE"
 
 for VAR in $ALL_VARS; do
+  # Get from current shell first, fallback to .env
   VALUE="${!VAR:-$(grep "^$VAR=" "$DOTENV_FILE" | cut -d '=' -f2-)}"
+
   if [[ -n "$VALUE" ]]; then
     echo "export $VAR=\"$VALUE\"" >> "$ENV_FILE"
     echo -e "\e[32m✅ Set $VAR=$VALUE\e[0m"
+
+    # Warn for dummy values
+    if [[ "$VALUE" =~ ^(changeme|dummy|to_be_set)?$ ]]; then
+      echo -e "\e[33m⚠️  WARNING: $VAR is using a dummy value: '$VALUE'. Please override via CLI or .env.\e[0m"
+    fi
   else
     echo -e "\e[33m⚠️  $VAR not set or empty. Skipping.\e[0m"
   fi
