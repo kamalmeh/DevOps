@@ -48,10 +48,35 @@ else
   fi
 fi
 
+
 # Ensure Nginx helper files are created
 if [[ ! -f "/etc/letsencrypt/options-ssl-nginx.conf" ]]; then
   echo -e "${GREEN}⚙️  Running Certbot Nginx install-only to create SSL helper files...${NC}"
-  certbot --nginx --install-only
+
+  SSL_DIR="/etc/letsencrypt"
+
+  # Ensure directory exists
+  sudo mkdir -p "$SSL_DIR"
+
+  # Download options-ssl-nginx.conf if missing
+  if [[ ! -f "$SSL_DIR/options-ssl-nginx.conf" ]]; then
+    echo -e "${YELLOW}🔧 Downloading options-ssl-nginx.conf...${NC}"
+    curl -fsSL -o "$SSL_DIR/options-ssl-nginx.conf" \
+      https://raw.githubusercontent.com/certbot/certbot/master/certbot/certbot/ssl-dhparams/options-ssl-nginx.conf
+  else
+    echo -e "${GREEN}✅ options-ssl-nginx.conf already exists.${NC}"
+  fi
+
+  # Download ssl-dhparams.pem if missing
+  if [[ ! -f "$SSL_DIR/ssl-dhparams.pem" ]]; then
+    echo -e "${YELLOW}🔧 Downloading ssl-dhparams.pem...${NC}"
+    curl -fsSL -o "$SSL_DIR/ssl-dhparams.pem" \
+      https://raw.githubusercontent.com/certbot/certbot/master/certbot/ssl-dhparams/ssl-dhparams.pem
+  else
+    echo -e "${GREEN}✅ ssl-dhparams.pem already exists.${NC}"
+  fi
+
+  echo -e "${GREEN}✅ Certbot SSL config dependencies ensured.${NC}"
 else
   echo -e "${GREEN}✅ Certbot Nginx SSL config already exists.${NC}"
 fi
