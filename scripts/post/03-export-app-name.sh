@@ -2,8 +2,11 @@
 
 set -euo pipefail
 
+# Resolve ROOT directory (project root where run.sh and .env live)
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ROOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
 ENV_FILE="/etc/profile.d/app-server-env.sh"
-DOTENV_FILE="../.env"
+DOTENV_FILE="$ROOT_DIR/.env"
 
 # Ensure script is run with sudo/root
 if [[ $EUID -ne 0 ]]; then
@@ -13,7 +16,7 @@ fi
 
 # Ensure .env exists
 if [[ ! -f "$DOTENV_FILE" ]]; then
-  echo "❌ .env file not found in current directory." >&2
+  echo "❌ .env file not found at: $DOTENV_FILE" >&2
   exit 1
 fi
 
