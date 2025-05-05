@@ -18,8 +18,8 @@ run_sorted_scripts() {
 }
 
 # Run stages in order
-run_sorted_scripts "$STEPS_DIR/pre"
-run_sorted_scripts "$STEPS_DIR/core"
-run_sorted_scripts "$STEPS_DIR/post"
+run_sorted_scripts "$STEPS_DIR/pre" $@
+run_sorted_scripts "$STEPS_DIR/core" $@
+run_sorted_scripts "$STEPS_DIR/post" $@
 
 echo "✅ All setup steps completed successfully."
