@@ -3,7 +3,7 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-STEPS_DIR="$ROOT_DIR/steps"
+STEPS_DIR="$ROOT_DIR"
 
 run_sorted_scripts() {
   local dir="$1"
