@@ -31,7 +31,7 @@ DOMAINS=("-d" "$APP_DOMAIN" "-d" "$WWW_DOMAIN")
 # Issue cert
 echo -e "${GREEN}🔐 Requesting certificate for ${APP_DOMAIN}, ${WWW_DOMAIN} using Route53 DNS validation...${NC}"
 
-certbot --nginx \
+certbot certonly \
   --dns-route53 \
   "${DOMAINS[@]}" \
   --agree-tos \
